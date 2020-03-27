@@ -14,7 +14,7 @@ class CartController extends AbstractController
      */
     public function index(SessionInterface $session, ProductRepository $productRepository)
     {
-
+            try {
         $panier = $session->get('panier', []);
 
         $panierInfo =[];
@@ -32,11 +32,12 @@ class CartController extends AbstractController
             $totalItem = $item['product']->getPrice() * $item['quantity'];
             $total += $totalItem;
         }
-
+    } catch (\Exception $e){ 
         return $this->render('cart/index.html.twig', [
             'items' => $panierInfo,
             'total' => $total
         ]);
+    }
     }
 
     /**
@@ -44,6 +45,8 @@ class CartController extends AbstractController
      */
     public function add($id, SessionInterface $session) 
     {
+
+        try {
         $panier = $session->get('panier', []);
 
         if(!empty($panier[$id])) {
@@ -51,8 +54,9 @@ class CartController extends AbstractController
         } else {$panier[$id] = 1;}
 
         $session->set('panier', $panier);
-
+    } catch (\Exception $e){
         return $this->redirectToRoute("cart_index");
+    }
     }
 
     /**
@@ -60,6 +64,8 @@ class CartController extends AbstractController
      */
 
     public function remove($id, SessionInterface $session) {
+
+        try {
         $panier = $session->get('panier', []);
 
         if(!empty($panier[$id])) {
@@ -67,7 +73,8 @@ class CartController extends AbstractController
         }
 
         $session->set('panier', $panier);
-
+    } catch (\Exception $e){
         return $this->redirectToRoute("cart_index");
      }
+    }
 }
